@@ -1,3 +1,4 @@
+import { useFeatureContext } from "contexts/FeatureContext";
 import React, { useEffect, useState } from "react";
 import { useMemo } from "react";
 import { Api, ParentProduct } from "utils";
@@ -5,8 +6,11 @@ import { formatProductListToOptionList } from "./helper";
 import { ProductViewProps } from "./types";
 
 const useProduct = (): ProductViewProps => {
+  const { setValue: setFeatureCtxValue } = useFeatureContext();
+
   const [product, setProduct] = useState<ParentProduct>();
   const [selectedProductId, setSelectedProductId] = useState<string>();
+  const [error, setError] = useState<Error>();
 
   useEffect(() => {
     getProduct();
@@ -19,7 +23,7 @@ const useProduct = (): ProductViewProps => {
       setProduct(result);
       setSelectedProductId(firstChildId);
     } catch (err) {
-      throw err;
+      setError(new Error("Get product failed"));
     }
   };
 
@@ -36,6 +40,10 @@ const useProduct = (): ProductViewProps => {
         const result = await Api.addItemToCheckout({
           productId: selectedProductId,
         });
+        setFeatureCtxValue((prev) => ({
+          ...prev,
+          cartItem: result.total_items,
+        }));
       } catch (err) {}
     }
   };
@@ -59,8 +67,9 @@ const useProduct = (): ProductViewProps => {
       selectedValue: selectedProductId,
       onSelect: handleSelectProduct,
       onBuy: handleBuy,
+      error,
     };
-  }, [product, selectedProductId, childProductsPrice]);
+  }, [product, selectedProductId, childProductsPrice, error]);
 
   return productViewProps;
 };

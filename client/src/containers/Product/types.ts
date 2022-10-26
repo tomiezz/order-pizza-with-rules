@@ -4,6 +4,7 @@ type ProductViewProps = {
   title: string;
   description?: string;
   price: number;
+  error?: Error;
   onBuy?: () => void;
 } & SelectionProps;
 

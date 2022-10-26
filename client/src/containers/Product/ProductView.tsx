@@ -16,9 +16,14 @@ const ProductView = ({
   onBuy,
   onSelect,
   selectedValue,
+  error,
 }: ProductViewProps) => {
   const classes = useStyles();
-  return (
+  return error ? (
+    <Grid container justifyContent="center" alignItems="center" py={8}>
+      <Typography fontWeight="bold">No data</Typography>
+    </Grid>
+  ) : (
     <Grid container flexDirection="column" mb={5}>
       <Grid container spacing={2}>
         <Grid item md={5} sm={12}>
