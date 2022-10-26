@@ -11,7 +11,6 @@ const useToastMessage = (props: ToastMessageProps): ToastMessageViewProps => {
   const handleOpen = () => {
     setOpen(true);
   };
-  console.log("DATA: ", props.data);
 
   useEffect(() => {
     if (props.data) {

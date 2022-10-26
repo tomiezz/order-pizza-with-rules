@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Api, isMeaningfullArray, Product, Rules } from "utils";
+import {
+  AlertMessageType,
+  Api,
+  isMeaningfullArray,
+  Product,
+  Rules,
+} from "utils";
 import {
   formatProductsToCheckoutItems,
   formatRulesToSelections,
@@ -7,10 +13,14 @@ import {
 import { CheckoutItem, CheckoutViewProps } from "./types";
 
 const useCheckout = (): CheckoutViewProps => {
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const [price, setPrice] = useState<number>(0);
   const [checkoutProducts, setCheckoutProducts] = useState<Product[]>([]);
   const [rulesList, setRulesList] = useState<Rules[]>([]);
   const [selectedRule, setSelectedRule] = useState<string>();
+  const [alert, setAlert] = useState<AlertMessageType>();
 
   const getCheckout = async () => {
     try {
@@ -23,13 +33,17 @@ const useCheckout = (): CheckoutViewProps => {
       if (result?.price) {
         setPrice(result.price);
       }
-      if (result?.available_rules) {
+      if (result?.available_rules && result?.available_rules.length > 0) {
         setRulesList(result.available_rules);
       }
       if (result?.selected_rule) {
         setSelectedRule(result.selected_rule);
       }
-    } catch (err) {}
+    } catch (err) {
+      setError(new Error("Get chekcout failed"));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const applyRules = async (rulesId: string) => {
@@ -38,7 +52,16 @@ const useCheckout = (): CheckoutViewProps => {
       if (result?.total_price) {
         setPrice(result.total_price);
       }
-    } catch (err) {}
+      setAlert({
+        type: "success",
+        message: "Apply rule success",
+      });
+    } catch (err) {
+      setAlert({
+        type: "error",
+        message: "Apply rule failed",
+      });
+    }
   };
 
   useEffect(() => {
@@ -65,11 +88,16 @@ const useCheckout = (): CheckoutViewProps => {
   };
 
   return {
-    data: checkoutRecords,
-    price,
-    options: rulesListSelections,
-    selectedValue: selectedRule,
-    onSelect: handleSelect,
+    error,
+    loading,
+    data: {
+      data: checkoutRecords,
+      options: rulesListSelections,
+      price: price,
+      onSelect: handleSelect,
+      selectedValue: selectedRule,
+      alert,
+    },
   };
 };
 

@@ -65,6 +65,12 @@ type AlertMessageType = {
   message: string;
 };
 
+type CompWithAsyncState<T> = {
+  loading: boolean;
+  error: Error | null;
+  data: T | null;
+};
+
 export type {
   ApiResponse,
   ParentProduct,
@@ -75,4 +81,5 @@ export type {
   ApplyRulesBodyDto,
   ApplyRulesRes,
   AlertMessageType,
+  CompWithAsyncState,
 };

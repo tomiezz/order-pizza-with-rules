@@ -1,11 +1,7 @@
 import { SelectionProps } from "components/Selection";
-import { AlertMessageType } from "utils";
+import { AlertMessageType, CompWithAsyncState } from "utils";
 
-type ProductViewProps = {
-  loading: boolean;
-  error: Error | null;
-  data: ProductDataViewProps | null;
-};
+type ProductViewProps = CompWithAsyncState<ProductDataViewProps>;
 
 type ProductDataViewProps = {
   title?: string;

@@ -6,58 +6,34 @@ import { CheckoutViewProps } from "./types";
 import PizzaImg from "assets/pizza.png";
 import CheckoutItem from "components/CheckoutItem";
 import Selection from "components/Selection";
+import Loading from "components/Loading";
+import ErrorBox from "components/ErrorBox";
+import { NoData } from "components/NoData";
+import CheckoutDataView from "./components/CheckoutDataView";
 
 const CheckoutView = ({
-  data,
-  price,
-  options,
-  selectedValue,
-  onSelect,
+  data: parentData,
+  error,
+  loading,
 }: CheckoutViewProps) => {
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <ErrorBox />;
+  }
+
   return (
     <Grid>
       <Typography variant="h6" fontWeight="bold">
         Checkout
       </Typography>
-      {data.length > 0 ? (
-        <Fragment>
-          <Stack my={3} spacing={2}>
-            {data.map((item) => (
-              <CheckoutItem {...item} key={item.id} />
-            ))}
-          </Stack>
 
-          <Divider />
-          <Stack direction="row" justifyContent="space-between">
-            <Stack flexDirection="row" alignItems="center" my={2}>
-              <Typography mr={2}>Available rules:</Typography>
-              <Selection
-                selectedValue={selectedValue}
-                onSelect={onSelect}
-                options={options}
-              />
-            </Stack>
-            <Stack
-              alignItems="center"
-              flexDirection="row"
-              justifyContent="flex-end"
-              py={2}
-            >
-              <Typography mr={2}>Total:</Typography>
-              <Typography
-                variant="h5"
-                fontWeight="bold"
-                color={COLOR.SECONDARY}
-              >
-                {price || 0}$
-              </Typography>
-            </Stack>
-          </Stack>
-        </Fragment>
+      {parentData === null || parentData.data.length === 0 ? (
+        <NoData />
       ) : (
-        <Grid my={8}>
-          <Typography textAlign="center">No data</Typography>
-        </Grid>
+        <CheckoutDataView {...parentData} />
       )}
     </Grid>
   );

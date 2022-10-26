@@ -1,9 +1,12 @@
-import { SelectionItem, SelectionProps } from "components/Selection";
-import { Rules } from "utils";
+import { SelectionProps } from "components/Selection";
+import { AlertMessageType, CompWithAsyncState } from "utils";
 
-type CheckoutViewProps = SelectionProps & {
+type CheckoutViewProps = CompWithAsyncState<CheckoutDataViewProps>;
+
+type CheckoutDataViewProps = SelectionProps & {
   data: CheckoutItem[];
   price: number;
+  alert?: AlertMessageType;
 };
 
 type CheckoutItem = {
@@ -14,4 +17,4 @@ type CheckoutItem = {
   desc?: string;
 };
 
-export type { CheckoutViewProps, CheckoutItem };
+export type { CheckoutViewProps, CheckoutItem, CheckoutDataViewProps };
