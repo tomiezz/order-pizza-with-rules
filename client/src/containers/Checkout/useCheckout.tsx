@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Api, Product, Rules } from "utils";
+import { Api, isMeaningfullArray, Product, Rules } from "utils";
 import {
   formatProductsToCheckoutItems,
   formatRulesToSelections,
@@ -16,10 +16,17 @@ const useCheckout = (): CheckoutViewProps => {
     try {
       const result = await Api.getCheckout();
 
-      setCheckoutProducts(result.items);
-      setPrice(result.price);
-      setRulesList(result.available_rules);
-      if (result.selected_rule) {
+      if (result && isMeaningfullArray(result.items)) {
+        setCheckoutProducts(result?.items);
+      }
+
+      if (result?.price) {
+        setPrice(result.price);
+      }
+      if (result?.available_rules) {
+        setRulesList(result.available_rules);
+      }
+      if (result?.selected_rule) {
         setSelectedRule(result.selected_rule);
       }
     } catch (err) {}
@@ -28,7 +35,9 @@ const useCheckout = (): CheckoutViewProps => {
   const applyRules = async (rulesId: string) => {
     try {
       const result = await Api.applyRules({ rulesId: rulesId });
-      setPrice(result.total_price);
+      if (result?.total_price) {
+        setPrice(result.total_price);
+      }
     } catch (err) {}
   };
 

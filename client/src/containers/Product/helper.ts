@@ -3,8 +3,8 @@ import { Product } from "utils";
 
 const formatProductToOption = (product: Product): SelectionItem => {
   return {
-    name: product.name,
-    value: product.id,
+    name: product.name || "",
+    value: product.id || "",
     desc: product.description,
   };
 };

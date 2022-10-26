@@ -17,7 +17,14 @@ const CheckoutItemView = ({
       <Grid item md={6}>
         <Grid container spacing={2}>
           <Grid item md={4}>
-            <Image className={classes.img} src={PizzaImg} alt="Image pizza" />
+            <Image
+              duration={400}
+              easing="ease-out"
+              showLoading
+              className={classes.img}
+              src={PizzaImg}
+              alt="Image pizza"
+            />
           </Grid>
           <Grid item md={6}>
             <Typography>{title}</Typography>{" "}

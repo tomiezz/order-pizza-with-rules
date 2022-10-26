@@ -16,7 +16,9 @@ const FeatureContextProvider = () => {
   const getCartSize = async () => {
     try {
       const result = await Api.getCheckoutInfo();
-      setFeatureState((prev) => ({ ...prev, cartItem: result.total_items }));
+      if (result?.total_items) {
+        setFeatureState((prev) => ({ ...prev, cartItem: result.total_items }));
+      }
     } catch (err) {}
   };
 

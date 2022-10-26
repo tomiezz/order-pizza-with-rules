@@ -4,11 +4,11 @@ import { CheckoutItem } from "./types";
 
 const formatProductToCheckoutItem = (product: Product): CheckoutItem => {
   return {
-    title: product.name,
-    price: product.price,
+    title: product.name || "",
+    price: product.price || 0,
     quantity: product.quantity || 0,
     desc: product.description,
-    id: product.id,
+    id: product.id || "",
   };
 };
 

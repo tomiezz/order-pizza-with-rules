@@ -1,16 +1,20 @@
 import { useFeatureContext } from "contexts/FeatureContext";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useMemo } from "react";
-import { Api, ParentProduct } from "utils";
+import { AlertMessageType, Api, ParentProduct } from "utils";
 import { formatProductListToOptionList } from "./helper";
-import { ProductViewProps } from "./types";
+import { ProductDataViewProps, ProductViewProps } from "./types";
 
 const useProduct = (): ProductViewProps => {
   const { setValue: setFeatureCtxValue } = useFeatureContext();
 
   const [product, setProduct] = useState<ParentProduct>();
+
   const [selectedProductId, setSelectedProductId] = useState<string>();
-  const [error, setError] = useState<Error>();
+
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [alert, setAlert] = useState<AlertMessageType | null>(null);
 
   useEffect(() => {
     getProduct();
@@ -19,20 +23,26 @@ const useProduct = (): ProductViewProps => {
   const getProduct = async () => {
     try {
       const result = await Api.getProduct();
-      const firstChildId = result.variant?.[0].id;
+
       setProduct(result);
+
+      const firstChildId = result?.variant?.[0].id;
+
       setSelectedProductId(firstChildId);
     } catch (err) {
       setError(new Error("Get product failed"));
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSelectProduct: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const targetValue = e.currentTarget.getAttribute("data-option");
-    if (targetValue) {
-      setSelectedProductId(targetValue);
-    }
-  };
+  const handleSelectProduct: React.MouseEventHandler<HTMLDivElement> =
+    useCallback((e) => {
+      const targetValue = e.currentTarget.getAttribute("data-option");
+      if (targetValue) {
+        setSelectedProductId(targetValue);
+      }
+    }, []);
 
   const handleBuy = async () => {
     if (selectedProductId) {
@@ -42,36 +52,53 @@ const useProduct = (): ProductViewProps => {
         });
         setFeatureCtxValue((prev) => ({
           ...prev,
-          cartItem: result.total_items,
+          cartItem: result?.total_items,
         }));
-      } catch (err) {}
+        setAlert({
+          message: "Add item success",
+          type: "success",
+        });
+      } catch (err) {
+        setAlert({
+          message: "Add item failed",
+          type: "error",
+        });
+      }
     }
   };
 
-  const childProductsPrice = useMemo(() => {
-    const mapProducts = new Map();
+  const price = useMemo(() => {
+    const childItem = product?.variant?.find(
+      (item) => item.id === selectedProductId
+    );
 
-    product?.variant.map((item) => {
-      mapProducts.set(item.id, item.price);
-    }, []);
-    return mapProducts;
-  }, [product]);
+    return childItem && childItem.price ? childItem.price : 0;
+  }, [selectedProductId, product]);
 
-  const productViewProps = useMemo<ProductViewProps>(() => {
-    const options = formatProductListToOptionList(product?.variant || []);
+  const productData: ProductDataViewProps = useMemo(() => {
+    const options =
+      product?.variant && product?.variant?.length > 0
+        ? formatProductListToOptionList(product?.variant)
+        : [];
+
     return {
-      title: product?.name || "",
+      title: product?.name,
       options,
-      price: childProductsPrice.get(selectedProductId),
-      description: product?.description,
+      price,
       selectedValue: selectedProductId,
-      onSelect: handleSelectProduct,
+      description: product?.description,
       onBuy: handleBuy,
-      error,
+      onSelect: handleSelectProduct,
+      alert,
     };
-  }, [product, selectedProductId, childProductsPrice, error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product, selectedProductId, alert]);
 
-  return productViewProps;
+  return {
+    error,
+    loading,
+    data: productData,
+  };
 };
 
 export default useProduct;

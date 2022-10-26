@@ -1,11 +1,18 @@
 import { SelectionProps } from "components/Selection";
+import { AlertMessageType } from "utils";
 
 type ProductViewProps = {
-  title: string;
+  loading: boolean;
+  error: Error | null;
+  data: ProductDataViewProps | null;
+};
+
+type ProductDataViewProps = {
+  title?: string;
   description?: string;
-  price: number;
-  error?: Error;
+  price?: number;
   onBuy?: () => void;
+  alert: AlertMessageType | null;
 } & SelectionProps;
 
-export type { ProductViewProps };
+export type { ProductViewProps, ProductDataViewProps };

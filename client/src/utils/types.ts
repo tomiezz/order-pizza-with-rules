@@ -1,22 +1,22 @@
 type ApiResponse<T> = {
   status: string;
-  data: T;
+  data?: T;
 };
 
 type Product = {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
   description?: string;
-  price: number;
+  price?: number;
   img?: string;
   quantity?: number;
 };
 
 type ParentProduct = {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
   description?: string;
-  variant: Product[];
+  variant?: Product[];
 };
 
 type Rules = {
@@ -60,6 +60,11 @@ type ApplyRulesRes = {
   total_price: number;
 };
 
+type AlertMessageType = {
+  type: "error" | "success";
+  message: string;
+};
+
 export type {
   ApiResponse,
   ParentProduct,
@@ -69,4 +74,5 @@ export type {
   Rules,
   ApplyRulesBodyDto,
   ApplyRulesRes,
+  AlertMessageType,
 };
