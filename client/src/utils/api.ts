@@ -10,7 +10,7 @@ import {
 } from "./types";
 
 const clientAxios = axios.create({
-  baseURL: process.env.API_ENDPOINT || "http://localhost:4000",
+  baseURL: process.env.REACT_APP_API_ENDPOINT || "http://localhost:4000",
 });
 
 const getProduct = async () => {
@@ -26,7 +26,9 @@ const getCheckout = async () => {
 };
 
 const addItemToCheckout = async (data: CheckoutBodyDto) => {
-  return await clientAxios.post(API_ENDPOINTS.CHECKOUT, data);
+  return await clientAxios
+    .post<ApiResponse<{ total_items: number }>>(API_ENDPOINTS.CHECKOUT, data)
+    .then((response) => response.data.data);
 };
 
 const applyRules = async (data: ApplyRulesBodyDto) => {
@@ -41,6 +43,12 @@ const reset = async () => {
     .then((result) => result.data.data);
 };
 
+const getCheckoutInfo = async () => {
+  return await clientAxios
+    .get<ApiResponse<{ total_items: number }>>(API_ENDPOINTS.CHECKOUT_INFO)
+    .then((response) => response.data.data);
+};
+
 export {
   getProduct,
   getCheckout,
@@ -48,4 +56,5 @@ export {
   applyRules,
   reset,
   clientAxios,
+  getCheckoutInfo,
 };

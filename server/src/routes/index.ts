@@ -15,7 +15,7 @@ router.get("/checkout", CheckoutController.getCheckout);
 
 router.post("/checkout", CheckoutController.addItemToCheckout);
 
-router.post("/checkout/info", CheckoutController.getCheckoutInfo);
+router.get("/checkout/info", CheckoutController.getCheckoutInfo);
 
 router.post("/checkout/reset", CheckoutController.resetCheckout);
 

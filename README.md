@@ -56,7 +56,7 @@ cd ./client
 /* Then, Install the needed packages */
 yarn install
 
-/* Then start the React app */
+/* Then start the app */
 yarn start
 
 /* To run the tests */
@@ -74,7 +74,7 @@ cd ./server
 /* Then, Install the needed packages */
 yarn install
 
-/* Then start the React app */
+/* Then start the app */
 yarn dev
 
 ```

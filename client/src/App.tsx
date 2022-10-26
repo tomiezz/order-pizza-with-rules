@@ -8,6 +8,7 @@ import NotFoundPage from "./containers/NotFoundPage";
 import BaseLayout from "./layouts/BaseLayout";
 import ErrorBoundary from "./layouts/ErrorBoundaries";
 import FeatureLayout from "./layouts/FeatureLayout.tsx/index";
+import { FeatureContextProvider } from "contexts/FeatureContext";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
               <Route path={APP_ROUTES.NOT_FOUND} element={<NotFoundPage />} />
             </Route>
 
-            <Route element={<FeatureLayout />}>
+            <Route element={<FeatureContextProvider />}>
               <Route path={APP_ROUTES.PRODUCT} element={<Product />} />
               <Route path={APP_ROUTES.CHECKOUT} element={<Checkout />} />
             </Route>
